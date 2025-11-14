@@ -13,13 +13,6 @@ declare global {
 
 const MONGODB_URI = process.env.MONGODB_URI
 
-// Validate that the MongoDB URI is defined in environment variables
-if (!MONGODB_URI) {
-  throw new Error(
-    'Please define the MONGODB_URI environment variable inside .env.local'
-  )
-}
-
 /**
  * Global cache to store the MongoDB connection.
  * In development, Next.js hot reloading can cause multiple connections
@@ -45,6 +38,13 @@ async function connectToDatabase(): Promise<typeof mongoose> {
 
   // If no promise exists, create a new connection
   if (!cached.promise) {
+    // Validate that the MongoDB URI is defined in environment variables
+    if (!MONGODB_URI) {
+      throw new Error(
+        'Please define the MONGODB_URI environment variable inside .env.local'
+      )
+    }
+
     const opts = {
       bufferCommands: false, // Disable buffering to fail fast if not connected
     }

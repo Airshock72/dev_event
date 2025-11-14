@@ -35,6 +35,12 @@ const BookingSchema = new Schema<IBooking>(
 // Index for efficient eventId-based queries
 BookingSchema.index({ eventId: 1 })
 
+// Index for common queries (event bookings by date)
+BookingSchema.index({ eventId: 1, createdAt: -1 })
+
+//Enforce one booking per event per mail
+BookingSchema.index({ eventId: 1, email: 1 }, { unique: true, name: 'uniq_event_email' })
+
 // Pre-save hook: Verify that the referenced event exists
 BookingSchema.pre('save', async function (next) {
   const booking = this as IBooking
